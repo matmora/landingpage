@@ -2,15 +2,8 @@
 
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { useEffect, useRef } from "react"
-import { Playfair_Display, Inter } from 'next/font/google'
-
-const playfair = Playfair_Display({ 
-  subsets: ['latin'],
-  display: 'swap',
-  weight: ['400', '500'],
-  style: ['normal'],
-})
+import { useEffect, useRef, useState } from "react"
+import { Inter } from 'next/font/google'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -19,6 +12,8 @@ const inter = Inter({
 
 export default function Page() {
   const observerRef = useRef<IntersectionObserver | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuAnimate, setMenuAnimate] = useState(false);
 
   useEffect(() => {
     observerRef.current = new IntersectionObserver((entries) => {
@@ -61,384 +56,190 @@ export default function Page() {
   }, []);
 
   return (
-    <div className={`flex flex-col min-h-screen bg-black text-foreground bg-dotted-grid ${inter.className}`}>
-      <style jsx global>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes shimmer {
-          0% { background-position: 0% 0; }
-          100% { background-position: 200% 0; }
-        }
-
-        .fade-in {
-          animation: fadeIn 0.8s ease-out forwards;
-          opacity: 0;
-        }
-
-        .delay-1 { animation-delay: 0.2s; }
-        .delay-2 { animation-delay: 0.4s; }
-        .delay-3 { animation-delay: 0.6s; }
-        
-        .glimmer-card {
-          position: relative;
-          background: rgb(23, 23, 23);
-          border-radius: 12px;
-          overflow: hidden;
-        }
-        
-        .glimmer-card::before {
-          content: '';
-          position: absolute;
-          inset: -1px;
-          background: linear-gradient(
-            90deg,
-            transparent,
-            rgba(236, 72, 153, 0.03),
-            rgba(236, 72, 153, 0.06),
-            rgba(236, 72, 153, 0.03),
-            transparent
-          );
-          background-size: 200% 100%;
-          animation: shimmer 8s ease-in-out infinite;
-          pointer-events: none;
-        }
-
-        .glimmer-pill {
-          position: relative;
-          background: rgb(23, 23, 23);
-          border-radius: 9999px;
-          overflow: hidden;
-        }
-        
-        .glimmer-pill::before {
-          content: '';
-          position: absolute;
-          inset: -1px;
-          background: linear-gradient(
-            90deg,
-            transparent,
-            rgba(236, 72, 153, 0.03),
-            rgba(236, 72, 153, 0.06),
-            rgba(236, 72, 153, 0.03),
-            transparent
-          );
-          background-size: 200% 100%;
-          animation: shimmer 8s ease-in-out infinite;
-          pointer-events: none;
-        }
-
-        .hero-glow {
-          position: absolute;
-          top: 85%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          width: 140%;
-          height: 600px;
-          background: radial-gradient(
-            circle at center,
-            rgba(255, 255, 255, 0.08) 0%,
-            rgba(255, 255, 255, 0.03) 35%,
-            transparent 70%
-          );
-          pointer-events: none;
-          z-index: 0;
-          filter: blur(50px);
-        }
-
-        .scroll-animation {
-          opacity: 0;
-          transform: translateY(20px);
-          transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-
-        .scroll-animation.animate-in {
-          opacity: 1;
-          transform: translateY(0);
-        }
-
-        .scroll-delay-1 { transition-delay: 0.1s; }
-        .scroll-delay-2 { transition-delay: 0.2s; }
-        .scroll-delay-3 { transition-delay: 0.3s; }
-      `}</style>
-
-      {/* Navigation */}
-      <header className="flex items-center justify-between py-4 px-6 border-b border-neutral-800/50">
-        <Link href="/" className={`text-2xl md:text-3xl font-medium ${playfair.className}`}>
-          VibeDev.ai
-        </Link>
-        <nav className="flex items-center gap-4">
-          <Button 
-            size="sm"
-            onClick={() => {
-              document.getElementById('early-access-form')?.scrollIntoView({ 
-                behavior: 'smooth',
-                block: 'center'
-              });
-            }}
+    <div
+      style={{ fontFamily: "'Times New Roman', Times, serif" }}
+      className="relative min-h-screen w-full overflow-hidden flex items-center justify-center"
+    >
+      {/* Camera image, always bottom right, never covers whole screen */}
+      <img
+        src="/images/AI cam.png"
+        alt="Retro video camera with AI on the screen, Mat Mora branding"
+        className="fixed z-0 bottom-0 right-0 w-[90vw] max-w-[600px] md:w-[40vw] md:max-w-[500px] h-auto object-contain select-none pointer-events-none transition-all duration-500"
+        style={{
+          position: 'fixed',
+          bottom: 0,
+          right: 0,
+          left: 'auto',
+          top: 'auto',
+        }}
+      />
+      {/* Blurred overlay only behind the main menu on mobile */}
+      <div className="absolute z-10 left-0 right-0 mx-auto top-0 bottom-0 flex items-center justify-center pointer-events-none md:hidden">
+        <div className="w-full max-w-2xl px-4 py-12 h-[420px] sm:h-[520px] rounded-3xl mx-auto"
+          style={{
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
+            background: 'rgba(0,0,0,0.25)',
+          }}
+        />
+      </div>
+      {/* Top header: Mat Mora and arrow */}
+      <div className="absolute top-0 left-0 w-full flex flex-col items-center pt-6 z-30">
+        <div className="flex items-center gap-2 fade-in" style={{ animationDelay: '0.1s' }}>
+          <h1 className="text-white text-lg md:text-xl font-semibold tracking-tight font-sans" aria-label="Mat GPT">Mat GPT</h1>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+      {/* Hamburger menu icon absolutely top left */}
+      <div className="absolute top-4 left-4 z-40">
+        <button
+          className="w-10 h-10 flex items-center justify-center rounded-md bg-black/40 backdrop-blur-md cursor-pointer transition-transform hover:scale-110 focus:outline-none"
+          aria-label="Open menu"
+          onClick={() => setMenuOpen(true)}
+        >
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+      {/* Slide-in menu overlay */}
+      {menuOpen && (
+        <div className="fixed inset-0 z-50 bg-black/80 flex flex-col items-center justify-center animate-fadeIn">
+          <button
+            className="absolute top-6 right-6 text-white text-2xl p-2 rounded-full hover:bg-white/10 transition"
+            aria-label="Close menu"
+            onClick={() => setMenuOpen(false)}
           >
-            Sign Up
-          </Button>
-        </nav>
-      </header>
-
-      <main className="flex-grow">
-        {/* Hero Section */}
-        <section className="py-20 px-6 relative">
-          <div className="hero-glow" />
-          <div className="max-w-[1200px] mx-auto text-center relative z-10">
-            {/* Logo Placeholder */}
-            <div className="mb-4">
-              <img 
-                src="/images/idevibelogo.png" 
-                alt="VibeDev Logo" 
-                className="w-36 h-36 mx-auto object-contain"
-              />
-            </div>
-            <div className="inline-flex items-center px-6 py-2 text-base font-medium text-purple-400 mb-8 glimmer-pill fade-in bg-purple-500/10 border border-purple-500/20 shadow-[0_0_15px_rgba(239,68,68,0.1)]">
-              <span className={playfair.className}>A Software Composer app</span>
-            </div>
-            <h1 className={`text-4xl md:text-5xl font-medium mb-6 tracking-tight fade-in delay-1 ${playfair.className}`}>
-              The Easiest Way To<br />Vibe Code With Cursor
-            </h1>
-            <p className="text-lg text-neutral-400 mb-8 fade-in delay-2">
-              VibeDev is your IDE for Vibe Coding
-            </p>
-            <div className="fade-in delay-3">
-              <Button 
-                size="lg" 
-                className="rounded-full"
-                onClick={() => {
-                  document.getElementById('early-access-form')?.scrollIntoView({ 
-                    behavior: 'smooth',
-                    block: 'center'
-                  });
-                }}
-              >
-                Get Early Access
-              </Button>
-            </div>
-          </div>
-        </section>
-
-        {/* Demo Section */}
-        <section className="py-20 px-6">
-          <div className="max-w-[1200px] mx-auto scroll-animation">
-            <div className="glimmer-card">
-              <div className="bg-neutral-900">
-                <div className="flex flex-col md:flex-row h-auto md:h-[600px]">
-                  {/* Input Section */}
-                  <div className="w-full md:w-1/2 md:border-r border-neutral-800 p-6 flex flex-col">
-                    <div className="mb-6">
-                      <label className="block text-sm font-medium text-neutral-400 mb-2">What should Cursor do?</label>
-                      <div className="relative">
-                        <input
-                          type="text"
-                          placeholder="Describe what you want to build..."
-                          className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500/30"
-                        />
-                        <button className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-green-500/10 rounded-lg text-green-400 hover:bg-green-500/20 transition-colors">
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M22 2L11 13"/>
-                            <path d="M22 2L15 22L11 13L2 9L22 2Z"/>
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <h3 className="text-sm font-medium text-neutral-400 mb-4">Start from</h3>
-                      <div className="grid grid-cols-1 gap-3">
-                        {[...Array(2)].map((_, i) => (
-                          <button
-                            key={i}
-                            className="flex items-center gap-3 p-4 bg-neutral-800/50 rounded-lg hover:bg-neutral-800 transition-colors text-left group"
-                          >
-                            <div className="w-8 h-8 rounded-lg bg-green-500/10 text-green-400 flex items-center justify-center group-hover:bg-green-500/20 transition-colors">
-                              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-                              </svg>
-                            </div>
-                            <span className="text-sm font-medium">Template {i + 1}</span>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Cursor Composer Section - Hidden on mobile */}
-                  <div className="hidden md:flex md:w-1/2 md:flex-col">
-                    <div className="p-4 border-b border-neutral-800">
-                      <h2 className="text-lg font-medium">Cursor Composer</h2>
-                    </div>
-                    <div className="flex-1 p-4 overflow-y-auto space-y-4">
-                      {/* First Message */}
-                      <div className="flex justify-end">
-                        <div className="max-w-[85%] p-4 bg-neutral-800 rounded-lg">
-                          <p className="text-sm text-neutral-300 text-right">
-                            Sure, I can make those changes for you.
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Status Updates */}
-                      <div className="flex flex-col gap-2">
-                        <div className="self-end max-w-[85%] p-3 bg-neutral-800 rounded-lg">
-                          <p className="text-sm font-medium text-green-400 text-right">File generated</p>
-                        </div>
-                        <div className="self-end max-w-[85%] p-3 bg-neutral-800 rounded-lg">
-                          <p className="text-sm font-medium text-green-400 text-right">File generated</p>
-                        </div>
-                        <div className="self-end max-w-[85%] p-3 bg-neutral-800 rounded-lg">
-                          <p className="text-sm font-medium text-green-400 text-right">File generated</p>
-                        </div>
-                        <div className="self-end max-w-[85%] p-3 bg-neutral-800 rounded-lg">
-                          <p className="text-sm font-medium text-green-400 text-right">File generated</p>
-                        </div>
-                      </div>
-
-                      {/* Completion Message */}
-                      <div className="flex justify-end">
-                        <div className="max-w-[85%] p-4 bg-neutral-800 rounded-lg">
-                          <p className="text-sm text-neutral-300 text-right">
-                            I&apos;ve successfully created your app
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="p-4 border-t border-neutral-800">
-                      <div className="relative">
-                        <input
-                          type="text"
-                          placeholder="Type your message..."
-                          className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500/30"
-                        />
-                        <button className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-green-500/10 rounded-lg text-green-400 hover:bg-green-500/20 transition-colors">
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M22 2L11 13"/>
-                            <path d="M22 2L15 22L11 13L2 9L22 2Z"/>
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Features Section */}
-        <section className="py-20 px-6 border-t border-neutral-800">
-          <div className="max-w-[1200px] mx-auto">
-            <div className="text-center mb-16 scroll-animation">
-              <h2 className={`text-3xl md:text-4xl font-medium mb-3 ${playfair.className}`}>Create in Minutes, Not Months</h2>
-              <p className="text-neutral-400 text-lg">Transform your ideas into reality with three simple prompts.</p>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-6 relative">
-              <div className="bg-neutral-900 p-8 rounded-xl border border-neutral-800/80 hover:border-green-500/20 transition-colors scroll-animation scroll-delay-1 group">
-                <div className="w-12 h-12 rounded-xl bg-green-500/10 text-green-400 flex items-center justify-center mb-6 group-hover:bg-green-500/20 transition-colors">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                  </svg>
-                </div>
-                <h3 className={`text-xl font-medium mb-3 group-hover:text-green-400 transition-colors ${playfair.className}`}>Download Template</h3>
-                <p className="text-neutral-400 leading-relaxed">
-                  Get started with our production-ready template. It&apos;s packed with everything you need to build a stunning landing page.
-                </p>
-              </div>
-
-              <div className="bg-neutral-900 p-8 rounded-xl border border-neutral-800/80 hover:border-green-500/20 transition-colors scroll-animation scroll-delay-2 group">
-                <div className="w-12 h-12 rounded-xl bg-green-500/10 text-green-400 flex items-center justify-center mb-6 group-hover:bg-green-500/20 transition-colors">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4z"/>
-                  </svg>
-                </div>
-                <h3 className={`text-xl font-medium mb-3 group-hover:text-green-400 transition-colors ${playfair.className}`}>Tell VibeDev What You Want</h3>
-                <p className="text-neutral-400 leading-relaxed">
-                  Describe your vision in plain English. VibeDev will control Cursor to transform your words into a beautiful, functional design.
-                </p>
-              </div>
-
-              <div className="bg-neutral-900 p-8 rounded-xl border border-neutral-800/80 hover:border-green-500/20 transition-colors scroll-animation scroll-delay-3 group">
-                <div className="w-12 h-12 rounded-xl bg-green-500/10 text-green-400 flex items-center justify-center mb-6 group-hover:bg-green-500/20 transition-colors">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
-                  </svg>
-                </div>
-                <h3 className={`text-xl font-medium mb-3 group-hover:text-green-400 transition-colors ${playfair.className}`}>Deploy to Vercel</h3>
-                <p className="text-neutral-400 leading-relaxed">
-                  Deploy your landing page to Vercel with one click. Share your creation with the world instantly on a global edge network.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Early Access Form Section */}
-        <section id="early-access-form" className="py-20 px-6 border-t border-neutral-800 bg-neutral-900/80">
-          <div className="max-w-[1200px] mx-auto text-center">
-            <div className="scroll-animation">
-              <h2 className={`text-3xl md:text-4xl font-medium mb-4 ${playfair.className}`}>Get Early Access</h2>
-              <p className="text-neutral-400 mb-12">Be the first to experience the future of coding.</p>
-            </div>
-            <div className="max-w-[400px] mx-auto scroll-animation">
-              <iframe 
-                data-tally-src="https://tally.so/embed/wM756p?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" 
-                loading="lazy" 
-                width="100%" 
-                height="230" 
-                frameBorder="0" 
-                title="Sign Up for Early Access"
-              ></iframe>
-            </div>
-          </div>
-        </section>
-      </main>
-
-      <footer className="py-8 px-6 border-t border-neutral-800/50 scroll-animation">
-        <div className="max-w-[1200px] mx-auto flex items-center justify-between">
-          <div className="text-sm text-neutral-400">
-            © 2024 Software Composer LP. All rights reserved.
-          </div>
-          <div className="flex items-center gap-6">
-            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-white transition-colors">
-              <span className="sr-only">Twitter</span>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/>
-              </svg>
+            &times;
+          </button>
+          <div className="flex flex-col gap-6 w-full max-w-xs mx-auto">
+            <a href="https://app.youform.com/forms/bkbeiyp6" className="flex items-center gap-3 px-4 py-3 rounded-lg transition-transform hover:scale-105 focus:scale-105 bg-black/60 focus:outline-none" style={{textDecoration: 'none'}}>
+              <img src="/images/person-standing.svg" alt="Humans icon" className="w-5 h-5" />
+              <span className="text-white font-medium font-sans">Humans</span>
             </a>
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-white transition-colors">
-              <span className="sr-only">GitHub</span>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
-              </svg>
+            <a href="https://app.youform.com/forms/qrdlkars" className="flex items-center gap-3 px-4 py-3 rounded-lg transition-transform hover:scale-105 focus:scale-105 bg-black/60 focus:outline-none" style={{textDecoration: 'none'}}>
+              <img src="/images/lightbulb.svg" alt="Brands icon" className="w-5 h-5" />
+              <span className="text-white font-medium font-sans">Brands</span>
             </a>
-            <a href="https://discord.com" target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-white transition-colors">
-              <span className="sr-only">Discord</span>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M18 6h0a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3h-7a3 3 0 0 1-3-3v0"/>
-                <path d="M6 18v-7a3 3 0 0 1 3-3h7"/>
-                <circle cx="8" cy="12" r="1"/>
-                <circle cx="16" cy="12" r="1"/>
-              </svg>
+            <a href="https://t.me/+itOfNgevMOI0YjE8" className="flex items-center gap-3 px-4 py-3 rounded-lg transition-transform hover:scale-105 focus:scale-105 bg-black/60 focus:outline-none" style={{textDecoration: 'none'}}>
+              <img src="/images/rss.svg" alt="Newsletter icon" className="w-5 h-5" />
+              <span className="text-white font-medium font-sans">Newsletter</span>
             </a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-white transition-colors">
-              <span className="sr-only">LinkedIn</span>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
-                <rect x="2" y="9" width="4" height="12"/>
-                <circle cx="4" cy="4" r="2"/>
-              </svg>
-            </a>
+            <div className="flex flex-col gap-3 items-start min-w-[120px] mt-2">
+              <a href="https://www.instagram.com/matmora_/" className="flex items-center gap-2 text-neutral-400" aria-label="Instagram">
+                <img src="/images/Instagram logo icon.svg" alt="Instagram logo icon for Mat Mora" className="w-4 h-4" />
+                <span className="text-sm font-sans">Instagram</span>
+              </a>
+              <a href="https://www.tiktok.com/@matmora_" className="flex items-center gap-2 text-neutral-400" aria-label="TikTok">
+                <img src="/images/Tiktok logo icon.ico" alt="TikTok logo icon for Mat Mora" className="w-4 h-4" />
+                <span className="text-sm font-sans">TikTok</span>
+              </a>
+              <a href="https://www.linkedin.com/in/mat-mora/" className="flex items-center gap-2 text-neutral-400" aria-label="LinkedIn">
+                <img src="/images/Linkedin logo icon.svg" alt="LinkedIn logo icon for Mat Mora" className="w-4 h-4" />
+                <span className="text-sm font-sans">LinkedIn</span>
+              </a>
+            </div>
+            <div className="mt-6 flex justify-between text-xs text-neutral-500 w-full">
+              <span>Press ⌘M to enjoy life</span>
+              <span>ESC to cancel</span>
+            </div>
           </div>
         </div>
-      </footer>
+      )}
+      {/* Main content */}
+      <div className="relative z-20 flex flex-col items-center justify-center w-full max-w-2xl px-4 py-12">
+        {/* Subtitle */}
+        <h2 className="text-white text-xl md:text-2xl font-medium mb-12 fade-in font-sans" style={{ animationDelay: '0.2s', marginTop: '2.5rem' }} aria-label="What can I help with?">What can I help with?</h2>
+        {/* Search bar */}
+        <div className="w-full max-w-xl mb-8 fade-in" style={{ animationDelay: '0.3s' }}>
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="AI, Collab, ...?"
+              className={`w-full px-5 py-4 rounded-lg bg-black/60 text-white placeholder-neutral-400 border border-white/10 focus:outline-none focus:ring-2 focus:ring-blue-400/30 text-lg shadow-lg backdrop-blur-md ${inter.className}`}
+              onFocus={() => setMenuAnimate(true)}
+            />
+            <button className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-white bg-blue-500/80 rounded-lg hover:bg-blue-600/80 transition-colors"
+              onClick={() => setMenuAnimate(true)}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </button>
+          </div>
+        </div>
+        {/* Main menu options - now left-aligned and closer to search bar */}
+        <div className="w-full max-w-xl bg-black/60 rounded-2xl p-6 mb-6 fade-in flex flex-col items-start ml-0 md:ml-8" style={{ animationDelay: '0.4s', marginTop: '-2rem' }}>
+          <div className="flex flex-col gap-2 mb-6 w-full">
+            <a href="https://app.youform.com/forms/bkbeiyp6" className={`flex items-center px-3 py-2 rounded-lg transition-transform hover:scale-[1.04] focus:scale-[1.04] group w-full ${menuAnimate ? 'animate-menu-pop' : ''}`} style={{textDecoration: 'none', fontSize: '0.95rem', justifyContent: 'space-between'}} onAnimationEnd={() => setMenuAnimate(false)} tabIndex={0}>
+              <div className="flex items-center gap-1 min-w-0">
+                <img src="/images/person-standing.svg" alt="Humans icon" className="w-5 h-5 mr-1" />
+                <span className="text-white font-medium font-sans whitespace-nowrap" style={{fontSize: '0.98em'}} >Humans</span>
+                <span className="text-xs text-neutral-400 ml-1 font-sans whitespace-nowrap">Press here</span>
+              </div>
+              <span className="text-xs text-neutral-400 font-sans whitespace-nowrap pl-2" style={{marginLeft: 'auto', letterSpacing: '0.01em'}} >⌘M Monetize</span>
+            </a>
+            <a href="https://app.youform.com/forms/qrdlkars" className={`flex items-center px-3 py-2 rounded-lg transition-transform hover:scale-[1.04] focus:scale-[1.04] group w-full ${menuAnimate ? 'animate-menu-pop' : ''}`} style={{textDecoration: 'none', fontSize: '0.95rem', justifyContent: 'space-between'}} onAnimationEnd={() => setMenuAnimate(false)} tabIndex={0}>
+              <div className="flex items-center gap-1 min-w-0">
+                <img src="/images/lightbulb.svg" alt="Brands icon" className="w-5 h-5 mr-1" />
+                <span className="text-white font-medium font-sans whitespace-nowrap" style={{fontSize: '0.98em'}} >Brands</span>
+                <span className="text-xs text-neutral-400 ml-1 font-sans whitespace-nowrap">Collaborations</span>
+              </div>
+              <span className="text-xs text-neutral-400 font-sans whitespace-nowrap pl-2" style={{marginLeft: 'auto', letterSpacing: '0.01em'}} >⌘B Connect</span>
+            </a>
+            <a href="https://t.me/+itOfNgevMOI0YjE8" className={`flex items-center px-3 py-2 rounded-lg transition-transform hover:scale-[1.04] focus:scale-[1.04] group w-full ${menuAnimate ? 'animate-menu-pop' : ''}`} style={{textDecoration: 'none', fontSize: '0.95rem', justifyContent: 'space-between'}} onAnimationEnd={() => setMenuAnimate(false)} tabIndex={0}>
+              <div className="flex items-center gap-1 min-w-0">
+                <img src="/images/rss.svg" alt="Newsletter icon" className="w-5 h-5 mr-1" />
+                <span className="text-white font-medium font-sans whitespace-nowrap" style={{fontSize: '0.98em'}} >Newsletter</span>
+                <span className="text-xs text-neutral-400 ml-1 font-sans whitespace-nowrap">Telegram</span>
+              </div>
+              <span className="text-xs text-neutral-400 font-sans whitespace-nowrap pl-2" style={{marginLeft: 'auto', letterSpacing: '0.01em'}} >⌘C Channel</span>
+            </a>
+          </div>
+          <div className="mt-6 text-neutral-400 text-sm font-sans">Follow for more.</div>
+          <div className="flex flex-col gap-3 items-start min-w-[120px] mt-2">
+            <a href="https://www.instagram.com/matmora_/" className="flex items-center gap-2 text-neutral-400" aria-label="Instagram">
+              <img src="/images/Instagram logo icon.svg" alt="Instagram logo icon for Mat Mora" className="w-4 h-4" />
+              <span className="text-sm font-sans">Instagram</span>
+            </a>
+            <a href="https://www.tiktok.com/@matmora_" className="flex items-center gap-2 text-neutral-400" aria-label="TikTok">
+              <img src="/images/Tiktok logo icon.ico" alt="TikTok logo icon for Mat Mora" className="w-4 h-4" />
+              <span className="text-sm font-sans">TikTok</span>
+            </a>
+            <a href="https://www.linkedin.com/in/mat-mora/" className="flex items-center gap-2 text-neutral-400" aria-label="LinkedIn">
+              <img src="/images/Linkedin logo icon.svg" alt="LinkedIn logo icon for Mat Mora" className="w-4 h-4" />
+              <span className="text-sm font-sans">LinkedIn</span>
+            </a>
+          </div>
+          <div className="mt-6 flex justify-between text-xs text-neutral-500 w-full">
+            <span>Press ⌘M to enjoy life</span>
+            <span>ESC to cancel</span>
+          </div>
+        </div>
+      </div>
+      {/* Animations */}
+      <style jsx>{`
+        .fade-in {
+          opacity: 0;
+          transform: translateY(24px);
+          animation: fadeInUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+        @keyframes fadeInUp {
+          to {
+            opacity: 1;
+            transform: none;
+          }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+        .animate-menu-pop {
+          animation: menuPop 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        @keyframes menuPop {
+          0% { transform: scale(1); }
+          30% { transform: scale(1.08); }
+          60% { transform: scale(0.96); }
+          100% { transform: scale(1); }
+        }
+      `}</style>
+      <meta name="keywords" content="Mat Mora, Mismi AI, AI content creator, entrepreneur in tech, build your AI clone, personal AI automation, London entrepreneur, AI media innovation" />
     </div>
-  )
+  );
 }
