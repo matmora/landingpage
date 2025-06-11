@@ -156,6 +156,7 @@ export default function Page() {
               placeholder="AI, Collab, ...?"
               className={`w-full px-5 py-4 rounded-lg bg-black/60 text-white placeholder-neutral-400 border border-white/10 focus:outline-none focus:ring-2 focus:ring-blue-400/30 text-lg shadow-lg backdrop-blur-md ${inter.className}`}
               onFocus={() => setMenuAnimate(true)}
+              readOnly
             />
             <button className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-white bg-blue-500/80 rounded-lg hover:bg-blue-600/80 transition-colors"
               onClick={() => setMenuAnimate(true)}
