@@ -172,9 +172,9 @@ export default function Page() {
               <div className="flex items-center gap-1 min-w-0">
                 <img src="/images/person-standing.svg" alt="Humans icon" className="w-5 h-5 mr-1" />
                 <span className="text-white font-medium font-sans whitespace-nowrap" style={{fontSize: '0.98em'}} >Humans</span>
-                <span className="text-xs text-neutral-400 ml-1 font-sans whitespace-nowrap">Press here</span>
+                <span className="text-xs text-neutral-400 ml-1 font-sans whitespace-nowrap">Become Next Gen</span>
               </div>
-              <span className="text-xs text-neutral-400 font-sans whitespace-nowrap pl-2" style={{marginLeft: 'auto', letterSpacing: '0.01em'}} >⌘M Monetize</span>
+              <span className="text-xs text-neutral-400 font-sans whitespace-nowrap pl-2" style={{marginLeft: 'auto', letterSpacing: '0.01em'}} >⌘H Creators</span>
             </a>
             <a href="https://app.youform.com/forms/qrdlkars" className={`flex items-center px-3 py-2 rounded-lg transition-transform hover:scale-[1.04] focus:scale-[1.04] group w-full ${menuAnimate ? 'animate-menu-pop' : ''}`} style={{textDecoration: 'none', fontSize: '0.95rem', justifyContent: 'space-between'}} onAnimationEnd={() => setMenuAnimate(false)} tabIndex={0}>
               <div className="flex items-center gap-1 min-w-0">
