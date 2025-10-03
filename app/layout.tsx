@@ -39,10 +39,6 @@ export const metadata: Metadata = {
     ],
   },
   manifest: "/manifest.json",
-  viewport: {
-    width: 'device-width',
-    initialScale: 1
-  }
 };
 
 export default function RootLayout({
@@ -51,7 +47,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <head>
         <title>Mat Mora | AI Entrepreneur, Creator & Founder at Mismi</title>
         <meta name="description" content="Mat Mora is a London-based entrepreneur, founder of Mismi AI, and content creator focused on AI, media, and innovation. Build your AI clone and automate your personal brand." />
@@ -95,7 +91,7 @@ export default function RootLayout({
         <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png" />
         <link rel="manifest" href="/manifest.json" />
       </head>
-      <body className={`${inter.className} bg-black bg-dotted-grid`}>{children}</body>
+      <body className={`${inter.className} bg-dotted-grid`}>{children}</body>
     </html>
   );
 }

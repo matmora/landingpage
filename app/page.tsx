@@ -58,9 +58,8 @@ export default function Page() {
   return (
     <div
       style={{ fontFamily: "'Times New Roman', Times, serif" }}
-      className="relative min-h-screen w-full overflow-hidden flex items-center justify-center"
+      className="bg-black relative min-h-screen w-full overflow-hidden flex items-center justify-center"
     >
-      {/* Camera image, always bottom right, never covers whole screen */}
       <img
         src="/images/AI cam.png"
         alt="Retro video camera with AI on the screen, Mat Mora branding"
@@ -73,7 +72,6 @@ export default function Page() {
           top: 'auto',
         }}
       />
-      {/* Blurred overlay only behind the main menu on mobile */}
       <div className="absolute z-10 left-0 right-0 mx-auto top-0 bottom-0 flex items-center justify-center pointer-events-none md:hidden">
         <div className="w-full max-w-2xl px-4 py-12 h-[420px] sm:h-[520px] rounded-3xl mx-auto"
           style={{
@@ -83,14 +81,12 @@ export default function Page() {
           }}
         />
       </div>
-      {/* Top header: Mat Mora and arrow */}
       <div className="absolute top-0 left-0 w-full flex flex-col items-center pt-6 z-30">
         <div className="flex items-center gap-2 fade-in" style={{ animationDelay: '0.1s' }}>
           <h1 className="text-white text-lg md:text-xl font-semibold tracking-tight font-sans" aria-label="Mat GPT">Mat GPT</h1>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
       </div>
-      {/* Hamburger menu icon absolutely top left */}
       <div className="absolute top-4 left-4 z-40">
         <button
           className="w-10 h-10 flex items-center justify-center rounded-md bg-black/40 backdrop-blur-md cursor-pointer transition-transform hover:scale-110 focus:outline-none"
@@ -100,7 +96,6 @@ export default function Page() {
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
       </div>
-      {/* Slide-in menu overlay */}
       {menuOpen && (
         <div className="fixed inset-0 z-50 bg-black/80 flex flex-col items-center justify-center animate-fadeIn">
           <button
@@ -144,11 +139,8 @@ export default function Page() {
           </div>
         </div>
       )}
-      {/* Main content */}
       <div className="relative z-20 flex flex-col items-center justify-center w-full max-w-2xl px-4 py-12">
-        {/* Subtitle */}
         <h2 className="text-white text-xl md:text-2xl font-medium mb-12 fade-in font-sans" style={{ animationDelay: '0.2s', marginTop: '2.5rem' }} aria-label="What can I help with?">What can I help with?</h2>
-        {/* Search bar */}
         <div className="w-full max-w-xl mb-8 fade-in" style={{ animationDelay: '0.3s' }}>
           <div className="relative">
             <input
@@ -165,7 +157,6 @@ export default function Page() {
             </button>
           </div>
         </div>
-        {/* Main menu options - now left-aligned and closer to search bar */}
         <div className="w-full max-w-xl bg-black/60 rounded-2xl p-6 mb-6 fade-in flex flex-col items-start ml-0 md:ml-8" style={{ animationDelay: '0.4s', marginTop: '-2rem' }}>
           <div className="flex flex-col gap-2 mb-6 w-full">
             <a href="https://app.youform.com/forms/bkbeiyp6" className={`flex items-center px-3 py-2 rounded-lg transition-transform hover:scale-[1.04] focus:scale-[1.04] group w-full ${menuAnimate ? 'animate-menu-pop' : ''}`} style={{textDecoration: 'none', fontSize: '0.95rem', justifyContent: 'space-between'}} onAnimationEnd={() => setMenuAnimate(false)} tabIndex={0}>
@@ -214,7 +205,6 @@ export default function Page() {
           </div>
         </div>
       </div>
-      {/* Animations */}
       <style jsx>{`
         .fade-in {
           opacity: 0;
